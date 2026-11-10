@@ -1,0 +1,122 @@
+============================================================
+1. DATASET SIZE
+============================================================
+Rows: 180,519   Columns: 53
+
+All columns:
+  - Type  (str)
+  - Days for shipping (real)  (int64)
+  - Days for shipment (scheduled)  (int64)
+  - Benefit per order  (float64)
+  - Sales per customer  (float64)
+  - Delivery Status  (str)
+  - Late_delivery_risk  (int64)
+  - Category Id  (int64)
+  - Category Name  (str)
+  - Customer City  (str)
+  - Customer Country  (str)
+  - Customer Email  (str)
+  - Customer Fname  (str)
+  - Customer Id  (int64)
+  - Customer Lname  (str)
+  - Customer Password  (str)
+  - Customer Segment  (str)
+  - Customer State  (str)
+  - Customer Street  (str)
+  - Customer Zipcode  (float64)
+  - Department Id  (int64)
+  - Department Name  (str)
+  - Latitude  (float64)
+  - Longitude  (float64)
+  - Market  (str)
+  - Order City  (str)
+  - Order Country  (str)
+  - Order Customer Id  (int64)
+  - order date (DateOrders)  (str)
+  - Order Id  (int64)
+  - Order Item Cardprod Id  (int64)
+  - Order Item Discount  (float64)
+  - Order Item Discount Rate  (float64)
+  - Order Item Id  (int64)
+  - Order Item Product Price  (float64)
+  - Order Item Profit Ratio  (float64)
+  - Order Item Quantity  (int64)
+  - Sales  (float64)
+  - Order Item Total  (float64)
+  - Order Profit Per Order  (float64)
+  - Order Region  (str)
+  - Order State  (str)
+  - Order Status  (str)
+  - Order Zipcode  (float64)
+  - Product Card Id  (int64)
+  - Product Category Id  (int64)
+  - Product Description  (float64)
+  - Product Image  (str)
+  - Product Name  (str)
+  - Product Price  (float64)
+  - Product Status  (int64)
+  - shipping date (DateOrders)  (str)
+  - Shipping Mode  (str)
+
+============================================================
+2. LABEL BALANCE (Late_delivery_risk)
+============================================================
+  0 (on time): 81,542  (45.2%)
+  1 (late): 98,977  (54.8%)
+
+============================================================
+3. MISSING VALUES IN PLANNED FEATURES
+============================================================
+  Days for shipment (scheduled): 0 missing
+  Order Item Quantity: 0 missing
+  Order Item Product Price: 0 missing
+  Order Item Discount Rate: 0 missing
+  Sales: 0 missing
+  Type: 0 missing
+  Shipping Mode: 0 missing
+  Market: 0 missing
+  Order Region: 0 missing
+  Customer Segment: 0 missing
+  Category Name: 0 missing
+  Department Name: 0 missing
+  order date (DateOrders): 0 missing
+
+============================================================
+4. LEAKAGE CHECK
+============================================================
+  Rule 'real days > scheduled days' matches the label for 97.5% of orders
+  -> the label is calculated from real shipping days, so that column must be removed.
+
+  Delivery Status vs label:
+Late_delivery_risk      0      1
+Delivery Status                 
+Advance shipping    41592      0
+Late delivery           0  98977
+Shipping canceled    7754      0
+Shipping on time    32196      0
+
+  Order Status vs label:
+Late_delivery_risk      0      1
+Order Status                    
+CANCELED             3692      0
+CLOSED               8507  11109
+COMPLETE            25292  34199
+ON_HOLD              4354   5450
+PAYMENT_REVIEW        811   1082
+PENDING              8515  11712
+PENDING_PAYMENT     16910  22922
+PROCESSING           9399  12503
+SUSPECTED_FRAUD      4062      0
+
+============================================================
+5. SHIPPING MODE: LATE RATE vs SCHEDULED AND REAL DAYS
+============================================================
+  (cancelled orders excluded, same as training)
+                orders late_rate  scheduled_days_avg scheduled_days_values  real_days_avg
+Shipping Mode                                                                            
+First Class      26513    100.0%                 1.0                   [1]           2.00
+Same Day          9293     47.9%                 0.0                   [0]           0.48
+Second Class     33806     79.8%                 2.0                   [2]           3.99
+Standard Class  103153     39.8%                 4.0                   [4]           3.99
+  Note: real days are shown only to explain the quirk; they are a
+  leakage column and are never used as a model feature.

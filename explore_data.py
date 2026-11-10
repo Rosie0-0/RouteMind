@@ -81,10 +81,27 @@ def main():
     log("\n  Order Status vs label:", lines)
     log(pd.crosstab(df["Order Status"], df[label]).to_string(), lines)
 
-    # Bonus: how predictive is shipping mode on its own? (useful for the report)
-    log("\n  Late rate by Shipping Mode (a legitimate feature):", lines)
-    log(df.groupby("Shipping Mode")[label].mean().map("{:.1%}".format)
-        .to_string(), lines)
+    # 5. Shipping Mode quirk: is the high late rate explained by short
+    #    promised (scheduled) windows? Measured from our own data, not assumed.
+    log("\n" + "=" * 60, lines)
+    log("5. SHIPPING MODE: LATE RATE vs SCHEDULED AND REAL DAYS", lines)
+    log("=" * 60, lines)
+    shipped = df[df["Delivery Status"] != "Shipping canceled"]
+    by_mode = shipped.groupby("Shipping Mode").agg(
+        orders=(label, "size"),
+        late_rate=(label, "mean"),
+        scheduled_days_avg=("Days for shipment (scheduled)", "mean"),
+        scheduled_days_values=("Days for shipment (scheduled)",
+                               lambda s: sorted(s.unique().tolist())),
+        real_days_avg=("Days for shipping (real)", "mean"),
+    )
+    by_mode["late_rate"] = by_mode["late_rate"].map("{:.1%}".format)
+    by_mode["scheduled_days_avg"] = by_mode["scheduled_days_avg"].round(2)
+    by_mode["real_days_avg"] = by_mode["real_days_avg"].round(2)
+    log("  (cancelled orders excluded, same as training)", lines)
+    log(by_mode.to_string(), lines)
+    log("  Note: real days are shown only to explain the quirk; they are a\n"
+        "  leakage column and are never used as a model feature.", lines)
 
     os.makedirs(cfg["paths"]["log_dir"], exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")

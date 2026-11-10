@@ -40,27 +40,51 @@ data:
     - Category Name
     - Department Name
   date_column: order date (DateOrders)   # turned into month / weekday / hour
+  date_format: "%m/%d/%Y %H:%M"          # e.g. 1/31/2018 22:56
+
+# Edge-case handling for new orders arriving with gaps or new values.
+# The training data has no missing values, so these steps change nothing
+# in training; they protect predict.py and the agent in live use.
+preprocessing:
+  numeric_impute: median          # missing number -> typical (middle) value
+  categorical_impute: Unknown     # missing category -> the word "Unknown"
+  unknown_categories: ignore      # unseen category -> all one-hot columns 0
 
 split:
   test_size: 0.2
   stratify: true
   random_state: 42
 
-model:
-  type: RandomForestClassifier
-  n_estimators: 200
-  max_depth: 15
-  min_samples_split: 10
-  min_samples_leaf: 5
-  class_weight: balanced
-  n_jobs: -1
+# Main model - powers the agent
+random_forest:
+  n_estimators: 200          # number of trees: more = more stable votes, slower
+  max_depth: 15              # cap on tree depth: main guard against overfitting
+  min_samples_split: 10      # a node needs 10 orders before it may split
+  min_samples_leaf: 5        # every leaf keeps at least 5 orders (no 1-order rules)
+  class_weight: balanced     # weight classes equally despite the 55/45 split
+  n_jobs: -1                 # use all CPU cores
+  random_state: 42
+
+# Comparison model - has the learning rate / epochs / batch size the brief asks about
+mlp:
+  hidden_layer_sizes: [64, 32]
+  learning_rate_init: 0.001  # Adam default: small, stable steps
+  batch_size: 256            # orders per weight update
+  max_iter: 30               # maximum epochs (full passes over the training data)
+  early_stopping: true       # stop when validation score stops improving
+  validation_fraction: 0.1
+  n_iter_no_change: 5        # patience: epochs without improvement before stopping
   random_state: 42
 
 evaluation:
   cv_folds: 5
   primary_metric: recall     # recall on the "late" class (1)
+  decision_threshold: 0.5    # flag "late" when risk >= this (chosen in step 1.4)
+  thresholds_to_compare: [0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60]
 
 paths:
-  model_out: models/routemind_rf.joblib
+  rf_model_out: models/routemind_rf.joblib
+  mlp_model_out: models/routemind_mlp.joblib
+  test_set_out: models/test_set.joblib
   log_dir: logs
   output_dir: outputs
