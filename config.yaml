@@ -86,8 +86,30 @@ mlp:
 evaluation:
   cv_folds: 5
   primary_metric: recall     # recall on the "late" class (1)
-  decision_threshold: 0.5    # flag "late" when risk >= this (chosen in step 1.4)
-  thresholds_to_compare: [0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60]
+
+  # Operating threshold: flag "late" when risk >= this.
+  # Rule: choose a threshold on a stable plateau, where small score changes
+  # do not flip decisions. On training CV every threshold from 0.38 to 0.70
+  # gives the same result. F1/F2 were rejected (they flag 93-97% of orders).
+  # Evidence: logs/threshold_20261110_202310.log
+  decision_threshold: 0.5
+
+  # Reported next to it in the final test run for comparison only:
+  # "highest recall with precision >= 0.80" on training CV. Not used by the
+  # agent because +/-0.02 around it changes the decision for 55% of orders.
+  comparison_threshold: 0.35
+
+  # ASSUMPTION: scores within +/- this of the operating threshold are
+  # "uncertain" and go to a human. Stated choice, not derived from data.
+  uncertainty_band: 0.05
+
+# Step 5 (select_threshold.py): candidates are computed from cross-validated
+# probabilities on the TRAINING set only. The rule is our stated choice,
+# not a business cost figure.
+threshold_selection:
+  precision_floors: [0.70, 0.80, 0.85]   # "highest recall with precision >= floor"
+  band_widths: [0.02, 0.05, 0.10]        # uncertainty band half-widths to compare
+  calibration_bins: 10
 
 paths:
   rf_model_out: models/routemind_rf.joblib
