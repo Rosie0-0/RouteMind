@@ -1,0 +1,39 @@
+================================================================
+ROUTEMIND PREDICTION (frozen Random Forest)
+================================================================
+Model: models/routemind_rf.joblib | threshold 0.5 | band +/-0.05
+Top global features: Shipping Mode 62.6%, Days for shipment (scheduled) 29.3%, order_hour 5.4%
+----------------------------------------------------------------
+DEMO-001  (Normal order, First Class)
+  Shipping Mode: First Class | scheduled days: 1
+  Risk score: 0.942  ->  HIGH_RISK
+  Route to human: no
+----------------------------------------------------------------
+DEMO-002  (Normal order, Standard Class)
+  Shipping Mode: Standard Class | scheduled days: 4
+  Risk score: 0.335  ->  MONITOR
+  Route to human: no
+----------------------------------------------------------------
+DEMO-003  (Edge case: a minor field (Sales) is missing)
+  Shipping Mode: Second Class | scheduled days: 2
+  Risk score: 0.724  ->  HIGH_RISK
+  Input issue: 'Sales' is missing
+  Route to human: no
+----------------------------------------------------------------
+DEMO-004  (Edge case: Shipping Mode is missing (critical feature))
+  Shipping Mode: None | scheduled days: None
+  Risk score: 0.537  ->  HIGH_RISK
+  Input issue: 'Days for shipment (scheduled)' is missing
+  Input issue: 'Shipping Mode' is missing
+  Input issue: 'Order Region' = 'West of USA' was never seen in training
+  ROUTE TO HUMAN: critical feature missing or unseen: Days for shipment (scheduled), Shipping Mode (risk score not reliable)
+  ROUTE TO HUMAN: risk 0.54 is inside the uncertainty band 0.45-0.55
+----------------------------------------------------------------
+DEMO-005  (Edge case: Shipping Mode never seen in training, and a broken date)
+  Shipping Mode: Drone Express | scheduled days: 1
+  Risk score: 0.660  ->  HIGH_RISK
+  Input issue: 'Shipping Mode' = 'Drone Express' was never seen in training
+  Input issue: 'order date (DateOrders)' = 'not a date' is not a readable date
+  ROUTE TO HUMAN: critical feature missing or unseen: Shipping Mode (risk score not reliable)
+----------------------------------------------------------------
+Log: logs\predict_20261111_000343.log

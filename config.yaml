@@ -111,6 +111,16 @@ threshold_selection:
   band_widths: [0.02, 0.05, 0.10]        # uncertainty band half-widths to compare
   calibration_bins: 10
 
+# predict.py: when a single new order is scored.
+prediction:
+  # If one of these is missing or has a value never seen in training, the
+  # model has lost its main signal (92% of feature importance), so the
+  # score is not trusted and the order goes to a human.
+  critical_features:
+    - Shipping Mode
+    - Days for shipment (scheduled)
+  sample_orders: sample_orders.json
+
 paths:
   rf_model_out: models/routemind_rf.joblib
   mlp_model_out: models/routemind_mlp.joblib
