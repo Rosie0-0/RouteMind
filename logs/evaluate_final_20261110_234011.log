@@ -1,0 +1,57 @@
+================================================================
+ROUTEMIND FINAL TEST EVALUATION (single run, settings frozen)
+================================================================
+Test set: 34,553 orders, 57.3% late
+Frozen RF settings: {'n_estimators': 200, 'max_depth': 10, 'min_samples_split': 10, 'min_samples_leaf': 5, 'class_weight': 'balanced', 'n_jobs': -1, 'random_state': 42}
+Operating threshold 0.5 | comparison threshold 0.35 | uncertainty band +/-0.05
+Disclosure: a preliminary test run at threshold 0.5 was made on 10 Nov 16:29
+(logs/evaluate_20261110_162939.log) before the threshold analysis. No setting was
+chosen from it: max_depth, threshold and band were all chosen on training
+cross-validation (logs/tune_*.log, logs/threshold_*.log).
+
+1. MODEL COMPARISON (test set)
+                                    Recall (late)  Precision (late)  Accuracy  Orders flagged
+Baseline (flag every order)                 1.000             0.573     0.573           1.000
+Random Forest, t=0.5 (operating)            0.590             0.893     0.725           0.378
+Random Forest, t=0.35 (comparison)          0.642             0.829     0.719           0.443
+MLP, t=0.5                                  0.600             0.875     0.722           0.393
+
+2. RANDOM FOREST AT OPERATING THRESHOLD 0.5
+  Late orders caught (true positives):   11,670
+  Late orders missed (false negatives):  8,125
+  False alarms (false positives):        1,393
+  On-time correctly cleared (true neg.): 13,365
+
+  Classification report:
+              precision    recall  f1-score   support
+
+ On time (0)      0.622     0.906     0.737     14758
+    Late (1)      0.893     0.590     0.710     19795
+
+    accuracy                          0.725     34553
+   macro avg      0.758     0.748     0.724     34553
+weighted avg      0.777     0.725     0.722     34553
+
+
+3. UNCERTAINTY BAND (risk within 0.5 +/- 0.05)
+  Orders routed to a human as 'uncertain': 0 of 34,553 (0.00%)
+
+4. FEATURE IMPORTANCE (frozen Random Forest)
+Shipping Mode                    62.6%
+Days for shipment (scheduled)    29.3%
+order_hour                        5.4%
+Order Region                      0.5%
+Category Name                     0.3%
+Type                              0.3%
+order_weekday                     0.3%
+Order Item Discount Rate          0.2%
+order_month                       0.2%
+Sales                             0.2%
+Customer Segment                  0.2%
+Order Item Product Price          0.1%
+Department Name                   0.1%
+Market                            0.1%
+Order Item Quantity               0.1%
+
+Charts -> outputs/final_headline_metric.png, final_confusion_matrix_rf.png, final_feature_importance.png
+Log: logs\evaluate_final_20261110_234011.log

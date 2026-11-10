@@ -1,0 +1,5 @@
+,Recall (late),Precision (late),Accuracy,Orders flagged
+Baseline (flag every order),1.0,0.573,0.573,1.0
+"Random Forest, t=0.5 (operating)",0.59,0.893,0.725,0.378
+"Random Forest, t=0.35 (comparison)",0.642,0.829,0.719,0.443
+"MLP, t=0.5",0.6,0.875,0.722,0.393

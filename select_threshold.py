@@ -158,6 +158,36 @@ def main():
     log.info(f"   Mean predicted risk {risk.mean():.3f} vs actual late rate "
              f"{y_arr.mean():.3f}")
 
+    # 5. Which risk values does the model actually output?
+    log.info("\n5. RISK SCORE DISTRIBUTION (which values the model outputs)")
+    edges = np.round(np.arange(0.0, 1.0001, 0.05), 2)
+    counts, _ = np.histogram(risk, bins=edges)
+    for lo, hi, n in zip(edges[:-1], edges[1:], counts):
+        late = y_arr[(risk >= lo) & (risk < hi)]
+        rate = f"{late.mean():.1%} late" if n else "-"
+        log.info(f"   {lo:.2f}-{hi:.2f}: {n:>7,} orders ({n / len(risk):6.2%})  {rate}")
+
+    t_op = cfg["evaluation"]["decision_threshold"]
+    w = cfg["evaluation"]["uncertainty_band"]
+    in_band = (np.abs(risk - t_op) <= w)
+    log.info(f"\n   Operating band {t_op - w:.2f}-{t_op + w:.2f}: "
+             f"{int(in_band.sum()):,} of {len(risk):,} training orders "
+             f"({in_band.mean():.3%})")
+    gap = ((risk > 0.40) & (risk < 0.68))
+    log.info(f"   Orders scoring between 0.40 and 0.68: {int(gap.sum()):,}")
+    near30 = (risk >= 0.28) & (risk <= 0.32)
+    log.info(f"   Orders scoring 0.28-0.32 (near 0.30): {int(near30.sum()):,} "
+             f"({near30.mean():.2%}), of which {y_arr[near30].mean():.1%} late")
+
+    log.info("\n   Risk score by Shipping Mode (out-of-fold, training set):")
+    by_mode = pd.DataFrame({"mode": X_train["Shipping Mode"].to_numpy(),
+                            "risk": risk, "late": y_arr})
+    summary = by_mode.groupby("mode").agg(
+        orders=("risk", "size"), risk_min=("risk", "min"),
+        risk_median=("risk", "median"), risk_max=("risk", "max"),
+        actual_late_rate=("late", "mean")).round(3)
+    log.info(summary.to_string())
+
     # Charts ---------------------------------------------------------------
     prec, rec, _ = precision_recall_curve(y_arr, risk)
     fig, ax = plt.subplots(figsize=(6.5, 5))

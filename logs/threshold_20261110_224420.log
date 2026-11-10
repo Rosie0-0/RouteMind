@@ -1,0 +1,89 @@
+================================================================
+ROUTEMIND THRESHOLD SELECTION (training data only)
+================================================================
+Training orders: 138,212 | late rate 57.3% | test set not loaded
+RF settings: {'n_estimators': 200, 'max_depth': 10, 'min_samples_split': 10, 'min_samples_leaf': 5, 'class_weight': 'balanced', 'n_jobs': -1, 'random_state': 42}
+Out-of-fold probabilities from 5-fold cross_val_predict...
+
+1. THRESHOLD TABLE (selected rows; full grid in outputs/threshold_candidates.csv)
+ threshold  recall  precision    f1    f2  flagged_share  late_missed  false_alarms
+      0.10   1.000      0.573 0.728 0.870          1.000            0         59030
+      0.20   1.000      0.573 0.728 0.870          1.000            0         59029
+      0.30   1.000      0.588 0.740 0.877          0.975           18         55572
+      0.32   0.996      0.591 0.742 0.876          0.965          321         54532
+      0.34   0.840      0.663 0.741 0.797          0.726        12676         33809
+      0.35   0.646      0.814 0.720 0.674          0.455        28018         11681
+      0.36   0.594      0.880 0.709 0.635          0.387        32141          6414
+      0.38   0.585      0.894 0.707 0.628          0.375        32870          5480
+      0.40   0.585      0.895 0.707 0.628          0.374        32897          5428
+      0.50   0.585      0.895 0.707 0.628          0.374        32898          5426
+      0.60   0.585      0.895 0.707 0.628          0.374        32898          5426
+      0.70   0.578      0.895 0.702 0.622          0.370        33436          5384
+      0.75   0.311      0.974 0.471 0.360          0.183        54591           658
+      0.80   0.268      1.000 0.423 0.314          0.154        57950             0
+
+   Reference - flag every order as late: recall 1.000, precision 0.573, F1 0.728, F2 0.870
+
+2. WHAT EACH RULE WOULD CHOOSE
+   Highest F1                                 -> threshold 0.33 | recall 0.976 | precision 0.600 | flags 93.1% of orders
+   Highest F2                                 -> threshold 0.31 | recall 0.999 | precision 0.589 | flags 97.2% of orders
+   Highest recall with precision >= 0.70      -> threshold 0.35 | recall 0.646 | precision 0.814 | flags 45.5% of orders
+   Highest recall with precision >= 0.80      -> threshold 0.35 | recall 0.646 | precision 0.814 | flags 45.5% of orders
+   Highest recall with precision >= 0.85      -> threshold 0.36 | recall 0.594 | precision 0.880 | flags 38.7% of orders
+
+3. UNCERTAINTY BAND (share of training orders inside threshold +/- width; these would go to a human)
+       +/-0.02 +/-0.05 +/-0.10
+t=0.31    4.7%   60.7%   62.6%
+t=0.33   51.7%   60.9%   62.6%
+t=0.35   55.5%   60.1%   62.3%
+t=0.36   35.1%   59.7%   61.9%
+t=0.50    0.0%    0.0%    0.0%
+
+4. CALIBRATION (predicted risk vs actual late rate, by bin)
+   predicted 0.20 -> actually late 0.00 (difference -0.20, 1 orders)
+   predicted 0.27 -> actually late 0.01 (difference -0.27, 3,475 orders)
+   predicted 0.34 -> actually late 0.40 (difference +0.05, 83,023 orders)
+   predicted 0.40 -> actually late 0.33 (difference -0.07, 3 orders)
+   predicted 0.69 -> actually late 0.93 (difference +0.24, 580 orders)
+   predicted 0.73 -> actually late 0.82 (difference +0.09, 29,898 orders)
+   predicted 0.88 -> actually late 1.00 (difference +0.12, 12 orders)
+   predicted 0.94 -> actually late 1.00 (difference +0.06, 21,220 orders)
+   Brier score: 0.1816 (0 = perfect; always predicting the base rate would give 0.2447)
+   Mean predicted risk 0.519 vs actual late rate 0.573
+
+5. RISK SCORE DISTRIBUTION (which values the model outputs)
+   0.00-0.05:       0 orders ( 0.00%)  -
+   0.05-0.10:       0 orders ( 0.00%)  -
+   0.10-0.15:       0 orders ( 0.00%)  -
+   0.15-0.20:       1 orders ( 0.00%)  0.0% late
+   0.20-0.25:     418 orders ( 0.30%)  0.0% late
+   0.25-0.30:   3,057 orders ( 2.21%)  0.6% late
+   0.30-0.35:  71,891 orders (52.02%)  38.9% late
+   0.35-0.40:  11,132 orders ( 8.05%)  43.8% late
+   0.40-0.45:       3 orders ( 0.00%)  33.3% late
+   0.45-0.50:       0 orders ( 0.00%)  -
+   0.50-0.55:       0 orders ( 0.00%)  -
+   0.55-0.60:       0 orders ( 0.00%)  -
+   0.60-0.65:       7 orders ( 0.01%)  100.0% late
+   0.65-0.70:     573 orders ( 0.41%)  92.7% late
+   0.70-0.75:  25,881 orders (18.73%)  81.7% late
+   0.75-0.80:   4,017 orders ( 2.91%)  83.6% late
+   0.80-0.85:       1 orders ( 0.00%)  100.0% late
+   0.85-0.90:      11 orders ( 0.01%)  100.0% late
+   0.90-0.95:  12,741 orders ( 9.22%)  100.0% late
+   0.95-1.00:   8,479 orders ( 6.13%)  100.0% late
+
+   Operating band 0.45-0.55: 0 of 138,212 training orders (0.000%)
+   Orders scoring between 0.40 and 0.68: 89
+   Orders scoring 0.28-0.32 (near 0.30): 2,553 (1.85%), of which 12.5% late
+
+   Risk score by Shipping Mode (out-of-fold, training set):
+                orders  risk_min  risk_median  risk_max  actual_late_rate
+mode                                                                     
+First Class      21231     0.876        0.946     0.980             1.000
+Same Day          7424     0.195        0.313     0.794             0.476
+Second Class     26945     0.666        0.736     0.801             0.799
+Standard Class   82612     0.269        0.342     0.403             0.398
+
+Charts -> outputs/pr_curve.png, risk_score_histogram.png, calibration_curve.png
+Log: logs\threshold_20261110_224420.log
