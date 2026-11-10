@@ -1,0 +1,66 @@
+# RouteMind - ML engine configuration
+# Every setting used by train.py / predict.py lives here, so the report
+# can show and justify one file instead of numbers hidden inside the code.
+
+data:
+  path: data/DataCoSupplyChainDataset.csv
+  encoding: latin-1          # the DataCo CSV is not UTF-8
+  label: Late_delivery_risk  # 1 = late, 0 = on time
+
+  # Columns only known AFTER delivery. Keeping them would leak the answer
+  # (accuracy near 100%) and the model would be useless for real decisions.
+  leakage_columns:
+    - Days for shipping (real)
+    - Delivery Status
+    - shipping date (DateOrders)
+    - Order Status
+
+  # Rows removed before training. Cancelled shipments are labelled 0
+  # ("on time") although they were never delivered, so they would teach
+  # the model a false pattern. (Found in explore_data.py, step 1.2.)
+  exclude_rows:
+    column: Delivery Status
+    values:
+      - Shipping canceled
+
+  # Features the agent can see at the moment an order is placed.
+  # Personal data (names, email, password, street) is never used.
+  numeric_features:
+    - Days for shipment (scheduled)
+    - Order Item Quantity
+    - Order Item Product Price
+    - Order Item Discount Rate
+    - Sales
+  categorical_features:
+    - Type
+    - Shipping Mode
+    - Market
+    - Order Region
+    - Customer Segment
+    - Category Name
+    - Department Name
+  date_column: order date (DateOrders)   # turned into month / weekday / hour
+
+split:
+  test_size: 0.2
+  stratify: true
+  random_state: 42
+
+model:
+  type: RandomForestClassifier
+  n_estimators: 200
+  max_depth: 15
+  min_samples_split: 10
+  min_samples_leaf: 5
+  class_weight: balanced
+  n_jobs: -1
+  random_state: 42
+
+evaluation:
+  cv_folds: 5
+  primary_metric: recall     # recall on the "late" class (1)
+
+paths:
+  model_out: models/routemind_rf.joblib
+  log_dir: logs
+  output_dir: outputs

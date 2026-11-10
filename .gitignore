@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Dataset is large and comes from Kaggle - each member downloads it
+data/*
+!data/.gitkeep
+
+# Trained model files can be large - rebuild with train.py
+models/*
+!models/.gitkeep
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
