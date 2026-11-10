@@ -58,12 +58,19 @@ split:
 # Main model - powers the agent
 random_forest:
   n_estimators: 200          # number of trees: more = more stable votes, slower
-  max_depth: 15              # cap on tree depth: main guard against overfitting
+  max_depth: 10              # smallest depth where validation score stops improving
+                             # (tune.py, logs/tune_20261110_191513.log; 5 is worse,
+                             # 10/15/20 identical, no limit starts to overfit)
   min_samples_split: 10      # a node needs 10 orders before it may split
   min_samples_leaf: 5        # every leaf keeps at least 5 orders (no 1-order rules)
   class_weight: balanced     # weight classes equally despite the 55/45 split
   n_jobs: -1                 # use all CPU cores
   random_state: 42
+
+# Hyperparameter sweep (tune.py): each max_depth is tried with 5-fold
+# cross-validation on the TRAINING set only. null = no depth limit.
+tuning:
+  max_depth_values: [5, 10, 15, 20, null]
 
 # Comparison model - has the learning rate / epochs / batch size the brief asks about
 mlp:

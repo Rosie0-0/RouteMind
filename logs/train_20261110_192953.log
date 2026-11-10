@@ -1,0 +1,49 @@
+19:29:53 | ============================================================
+19:29:53 | ROUTEMIND TRAINING RUN
+19:29:53 | ============================================================
+19:29:54 | Orders after cleaning: 172,765
+19:29:54 | Features used (15): ['Days for shipment (scheduled)', 'Order Item Quantity', 'Order Item Product Price', 'Order Item Discount Rate', 'Sales', 'Type', 'Shipping Mode', 'Market', 'Order Region', 'Customer Segment', 'Category Name', 'Department Name', 'order_month', 'order_weekday', 'order_hour']
+19:29:54 |   CHECK 'Days for shipping (real)' in features? False
+19:29:54 |   CHECK 'Delivery Status' in features? False
+19:29:54 |   CHECK 'shipping date (DateOrders)' in features? False
+19:29:54 |   CHECK 'Order Status' in features? False
+19:29:54 |   CHECK 'Late_delivery_risk' in features? False
+19:29:54 | Late rate: 57.3%
+19:29:54 | Preprocessing settings: {'numeric_impute': 'median', 'categorical_impute': 'Unknown', 'unknown_categories': 'ignore'}
+19:29:54 | Train: 138,212 orders | Test: 34,553 orders
+19:29:54 | ------------------------------------------------------------
+19:29:54 | RANDOM FOREST settings: {'n_estimators': 200, 'max_depth': 10, 'min_samples_split': 10, 'min_samples_leaf': 5, 'class_weight': 'balanced', 'n_jobs': -1, 'random_state': 42}
+19:29:54 | Running 5-fold cross-validation on the training set...
+19:30:25 |   CHECK score keys returned: ['test_accuracy', 'test_precision', 'test_recall', 'train_accuracy', 'train_precision', 'train_recall']
+19:30:25 |   recall    train 0.585 | validation 0.585 (+/- 0.002) | gap -0.000
+19:30:25 |   precision train 0.895 | validation 0.895 (+/- 0.002) | gap -0.000
+19:30:25 |   accuracy  train 0.723 | validation 0.723 (+/- 0.002) | gap -0.000
+19:30:25 |   Cross-validation took 30s
+19:30:33 | Random Forest fitted on full training set in 8s
+19:30:33 | Saved -> models/routemind_rf.joblib
+19:30:33 | ------------------------------------------------------------
+19:30:33 | MLP settings: {'hidden_layer_sizes': (64, 32), 'learning_rate_init': 0.001, 'batch_size': 256, 'max_iter': 30, 'early_stopping': True, 'validation_fraction': 0.1, 'n_iter_no_change': 5, 'random_state': 42}
+19:30:42 | MLP trained for 17 epochs in 9s
+19:30:42 |   epoch  1: training loss 0.5402 | validation accuracy 0.7270
+19:30:42 |   epoch  2: training loss 0.5070 | validation accuracy 0.7281
+19:30:42 |   epoch  3: training loss 0.5031 | validation accuracy 0.7282
+19:30:42 |   epoch  4: training loss 0.5011 | validation accuracy 0.7281
+19:30:42 |   epoch  5: training loss 0.4992 | validation accuracy 0.7283
+19:30:42 |   epoch  6: training loss 0.4980 | validation accuracy 0.7283
+19:30:42 |   epoch  7: training loss 0.4965 | validation accuracy 0.7283
+19:30:42 |   epoch  8: training loss 0.4954 | validation accuracy 0.7284
+19:30:42 |   epoch  9: training loss 0.4942 | validation accuracy 0.7257
+19:30:42 |   epoch 10: training loss 0.4931 | validation accuracy 0.7241
+19:30:42 |   epoch 11: training loss 0.4919 | validation accuracy 0.7290
+19:30:42 |   epoch 12: training loss 0.4913 | validation accuracy 0.7257
+19:30:42 |   epoch 13: training loss 0.4900 | validation accuracy 0.7267
+19:30:42 |   epoch 14: training loss 0.4888 | validation accuracy 0.7261
+19:30:42 |   epoch 15: training loss 0.4880 | validation accuracy 0.7257
+19:30:42 |   epoch 16: training loss 0.4868 | validation accuracy 0.7284
+19:30:42 |   epoch 17: training loss 0.4861 | validation accuracy 0.7240
+19:30:42 |   Early stopping: no improvement for 5 epochs
+19:30:42 | Saved -> models/routemind_mlp.joblib
+19:30:43 | Saved chart -> outputs\mlp_training_curve.png
+19:30:43 | Saved untouched test set -> models/test_set.joblib
+19:30:43 | ============================================================
+19:30:43 | Training complete. Log: logs\train_20261110_192953.log

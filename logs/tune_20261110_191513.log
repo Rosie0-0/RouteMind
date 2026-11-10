@@ -1,0 +1,23 @@
+19:15:14 | ============================================================
+19:15:14 | ROUTEMIND max_depth VALIDATION CURVE
+19:15:14 | ============================================================
+19:15:14 | Training orders: 138,212 (test set not loaded)
+19:15:14 | 5-fold cross-validation, depths tested: [5, 10, 15, 20, None]
+19:15:14 | Other RF settings held fixed: {'n_estimators': 200, 'min_samples_split': 10, 'min_samples_leaf': 5, 'class_weight': 'balanced', 'n_jobs': -1, 'random_state': 42}
+19:15:29 | max_depth=5    | recall train 0.585 val 0.585 | precision train 0.879 val 0.877 | accuracy train 0.716 val 0.715 | 14s
+19:15:57 | max_depth=10   | recall train 0.585 val 0.585 | precision train 0.895 val 0.895 | accuracy train 0.723 val 0.723 | 29s
+19:16:45 | max_depth=15   | recall train 0.585 val 0.585 | precision train 0.895 val 0.895 | accuracy train 0.723 val 0.723 | 48s
+19:18:00 | max_depth=20   | recall train 0.585 val 0.585 | precision train 0.895 val 0.895 | accuracy train 0.723 val 0.723 | 76s
+19:20:05 | max_depth=None | recall train 0.592 val 0.585 | precision train 0.896 val 0.895 | accuracy train 0.727 val 0.723 | 125s
+19:20:05 | ------------------------------------------------------------
+19:20:05 | Train minus validation gap (bigger gap = more overfitting):
+19:20:05 | 
+           gap_recall  gap_precision  gap_accuracy
+max_depth                                         
+5             -0.0000         0.0019        0.0009
+10            -0.0000        -0.0000       -0.0000
+15            -0.0000        -0.0000       -0.0000
+20             0.0000         0.0000        0.0000
+None           0.0069         0.0017        0.0042
+19:20:05 | Saved -> outputs\max_depth_curve.png, outputs\max_depth_curve.csv
+19:20:05 | Log: logs\tune_20261110_191513.log
