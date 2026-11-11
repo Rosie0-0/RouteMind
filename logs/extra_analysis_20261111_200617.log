@@ -1,0 +1,36 @@
+==================================================================
+ROUTEMIND EXTRA ANALYSIS (training data only; test set not scored)
+==================================================================
+Training orders: 138,212 | late rate 57.3% | 5 folds, random_state 42
+
+1. RULE BASELINE vs RANDOM FOREST (training set)
+                                                                recall  precision  accuracy  flagged
+Rule: late if Shipping Mode in ['First Class', 'Second Class']  0.5399     0.8874    0.6971   0.3486
+Random Forest (5-fold CV, threshold 0.5)                        0.5845     0.8951    0.7227   0.3741
+Flag every order                                                1.0000     0.5729    0.5729   1.0000
+   The rule and the Random Forest give the same decision for 97.44% of training orders.
+
+2. LEAKAGE DEMO (5-fold CV, same RF settings)
+                                            recall  precision  accuracy
+Without leaked columns (our model)          0.5845     0.8951    0.7227
+WITH leaked columns added back (demo only)  1.0000     1.0000    1.0000
+   Leaked columns added for this demo: ['Days for shipping (real)', 'Delivery Status']. The model is not saved;
+   the leakage guard in features.py is unchanged.
+
+3. MLP SWEEP (5-fold CV; other settings as in config.yaml)
+   lr 0.01    batch 64   | accuracy 0.7223 recall 0.5843 precision 0.8942 | epochs [11, 12, 13, 13, 8] | 21s
+   lr 0.01    batch 256  | accuracy 0.7212 recall 0.5862 precision 0.8895 | epochs [12, 12, 13, 8, 8] | 11s
+   lr 0.001   batch 64   | accuracy 0.7216 recall 0.5860 precision 0.8906 | epochs [11, 10, 9, 8, 8] | 17s
+   lr 0.001   batch 256  | accuracy 0.7206 recall 0.5893 precision 0.8846 | epochs [16, 11, 12, 10, 8] | 11s <- config.yaml
+   lr 0.0001  batch 64   | accuracy 0.7214 recall 0.5876 precision 0.8884 | epochs [19, 19, 23, 16, 14] | 28s
+   lr 0.0001  batch 256  | accuracy 0.7208 recall 0.5876 precision 0.8868 | epochs [22, 20, 20, 24, 16] | 14s
+   max epochs allowed: 30; early stopping patience 5
+
+4. CLASS_WEIGHT CHECK (5-fold out-of-fold, threshold 0.5)
+                                        recall  precision  accuracy  flagged  mean_predicted_risk  brier_score
+class_weight = balanced (frozen model)  0.5845     0.8951    0.7227   0.3741               0.5188       0.1816
+class_weight = None                     0.5845     0.8951    0.7227   0.3741               0.5731       0.1789
+   Actual late rate in training: 0.5729 (a calibrated model's mean predicted risk should be close to this)
+
+CSVs -> outputs/extra_rule_baseline.csv, extra_leakage_demo.csv, extra_mlp_sweep.csv, extra_class_weight.csv
+Log: logs\extra_analysis_20261111_200617.log
