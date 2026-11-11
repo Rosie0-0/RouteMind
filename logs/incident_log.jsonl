@@ -1,0 +1,12 @@
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Reroute", "outcome": "shipment rerouted (reroute 1)"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Escalate", "outcome": "handed to human supervisor"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.34, "action": "Monitor", "outcome": "no intervention; order stays under observation"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.15, "action": "Monitor", "outcome": "no intervention; order stays under observation"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Monitor", "outcome": "no intervention; order stays under observation"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "SendToHuman", "outcome": "missing input for the fuzzy rules"}
+{"time": "2026-11-11T19:38:14", "order_id": "DEMO-004", "shipping_mode": null, "posterior": null, "action": "SendToHuman", "outcome": "stopped before reasoning: critical feature missing or unseen: Days for shipment (scheduled), Shipping Mode (risk score not reliable); risk 0.53 is inside the uncertainty band 0.45-0.55"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Monitor", "outcome": "reroute rejected by human (Sensor/data looks wrong (U1)); kept under observation"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Reroute", "outcome": "shipment rerouted (reroute 1)"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Reroute", "outcome": "shipment rerouted (reroute 1)"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Escalate", "outcome": "primary and backup routing API failed"}
+{"time": "2026-11-11T19:38:14", "order_id": "REAL-58619-146726", "shipping_mode": "Standard Class", "posterior": 0.71, "action": "Escalate", "outcome": "loop limit reached after 3 reroutes"}

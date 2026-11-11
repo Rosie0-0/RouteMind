@@ -1,0 +1,66 @@
+[
+  {
+    "id": "A", "title": "Truck idle, stock 2.5 days -> Reroute (needs approval)",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "y"},
+    "expect": {"posterior": 0.71, "rules": {"R7": 0.25, "R8": 0.25}, "urgency": 82.5, "action": "Reroute"}
+  },
+  {
+    "id": "B", "title": "Truck idle, stock 2.4 days -> Escalate (boundary 85.0)",
+    "order": "REAL-58619-146726", "rf_prior_override": 0.34, "idle": true, "stock_days": 2.4,
+    "expect": {"posterior": 0.71, "rules": {"R7": 0.30, "R8": 0.20}, "urgency": 85.0, "action": "Escalate"}
+  },
+  {
+    "id": "C", "title": "No evidence, stock 2.5 days -> Monitor",
+    "order": "REAL-58619-146726", "rf_prior_override": 0.34, "idle": null, "stock_days": 2.5,
+    "expect": {"posterior": 0.34, "rules": {"R1": 0.25, "R2": 0.25, "R4": 0.20, "R5": 0.20}, "urgency": 38.3, "action": "Monitor"}
+  },
+  {
+    "id": "D", "title": "Truck moving, stock 2.5 days -> Monitor (boundary 25.0)",
+    "order": "REAL-58619-146726", "rf_prior_override": 0.34, "idle": false, "stock_days": 2.5,
+    "expect": {"posterior": 0.15, "rules": {"R1": 0.25, "R2": 0.25}, "urgency": 25.0, "action": "Monitor"}
+  },
+  {
+    "id": "E", "title": "Truck idle, stock 8 days -> Monitor",
+    "order": "REAL-58619-146726", "rf_prior_override": 0.34, "idle": true, "stock_days": 8,
+    "expect": {"posterior": 0.71, "rules": {"R9": 0.55}, "urgency": 40.0, "action": "Monitor"}
+  },
+  {
+    "id": "F", "title": "Truck idle, stock reading missing -> Send to human",
+    "order": "REAL-58619-146726", "rf_prior_override": 0.34, "idle": true, "stock_days": null,
+    "expect": {"action": "SendToHuman"}
+  },
+  {
+    "id": "G", "title": "DEMO: critical feature missing -> human, before Bayes and fuzzy",
+    "order": "DEMO-004", "idle": true, "stock_days": 2.5
+  },
+  {
+    "id": "H", "title": "DEMO: human rejects the reroute and gives a reason",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "n", "reason": "1"}
+  },
+  {
+    "id": "I", "title": "DEMO: routing API times out, retry succeeds",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "y"},
+    "tool": {"primary": ["timeout", "timeout", "ok"], "booking_status": "not_booked", "backup": "ok"}
+  },
+  {
+    "id": "J", "title": "DEMO: routing API down, backup API takes over",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "y"},
+    "tool": {"primary": ["timeout", "timeout", "timeout", "timeout"], "booking_status": "not_booked", "backup": "ok"}
+  },
+  {
+    "id": "K", "title": "DEMO: routing API and backup both down -> escalate",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "y"},
+    "tool": {"primary": ["timeout", "timeout", "timeout", "timeout"], "booking_status": "not_booked", "backup": "timeout"}
+  },
+  {
+    "id": "L", "title": "DEMO: loop limit - truck still idle after every reroute",
+    "order": "REAL-58619-146726", "idle": true, "stock_days": 2.5,
+    "answers": {"approve": "y"},
+    "followup_idle": [true, true, true]
+  }
+]

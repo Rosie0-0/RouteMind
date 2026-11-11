@@ -121,6 +121,72 @@ prediction:
     - Days for shipment (scheduled)
   sample_orders: sample_orders.json
 
+# agent_demo.py: every number the agent reasons with. These match the
+# Task 1 Section 1.3 worked examples (Member A). Evidence and stock are SIMULATED:
+# the DataCo dataset has no GPS, sensor or stock data.
+agent:
+  scenarios: agent_scenarios.json
+
+  bayes:
+    prior_clamp: [0.01, 0.99]       # keep the RF prior away from 0 and 1
+    posterior_decimals: 2           # round before the fuzzy step
+    evidence: "truck idle > 60 min at unscheduled location (SIMULATED)"
+    # P(evidence | late), P(evidence | on time)
+    idle_true:  {p_given_late: 0.70, p_given_on_time: 0.15}
+    idle_false: {p_given_late: 0.30, p_given_on_time: 0.85}
+    # idle unknown (null): no update, posterior = prior
+
+  fuzzy:
+    # trap = trapezoid [a, b, c, d]; tri = triangle [a, b, c]
+    risk:
+      Low:    {shape: trap, points: [0, 0, 0.2, 0.4]}
+      Medium: {shape: tri,  points: [0.3, 0.5, 0.7]}
+      High:   {shape: trap, points: [0.6, 0.8, 1, 1]}
+    stock_days:                      # SIMULATED input
+      Critical: {shape: trap, points: [0, 0, 1, 3]}
+      Low:      {shape: tri,  points: [2, 4, 6]}
+      Adequate: {shape: trap, points: [5, 7, .inf, .inf]}
+    # IF risk AND stock THEN action   (AND = minimum)
+    rules:
+      R1: [Low, Critical, Monitor]
+      R2: [Low, Low, Continue]
+      R3: [Low, Adequate, Continue]
+      R4: [Medium, Critical, Reroute]
+      R5: [Medium, Low, Monitor]
+      R6: [Medium, Adequate, Monitor]
+      R7: [High, Critical, Escalate]
+      R8: [High, Low, Reroute]
+      R9: [High, Adequate, Monitor]
+    outputs: {Continue: 10, Monitor: 40, Reroute: 70, Escalate: 95}
+    urgency_decimals: 1             # round BEFORE banding
+    # urgency < 25 Continue | < 55 Monitor | < 85 Reroute | >= 85 Escalate
+    bands:
+      - [25, Continue]
+      - [55, Monitor]
+      - [85, Reroute]
+      - [.inf, Escalate]
+
+  approval_required: [Reroute]      # high-risk action: human must approve
+  reasoning_card_for: [Reroute, Escalate]
+
+  reject_reasons:                   # U1-U4 = uncertainty sources in Task 1.1
+    "1": "Sensor/data looks wrong (U1)"
+    "2": "Information out of date or missing (U2)"
+    "3": "Driver/planner/customer instruction (U3)"
+    "4": "Carrier or system unavailable (U4)"
+    "5": "Cost or business reason"
+    "6": "Other (free text)"
+
+  tools:                            # SIMULATED routing API
+    max_retries: 3                  # per reroute call
+    backoff_seconds: [1, 2, 4]      # wait before retry 1, 2, 3 (printed, not slept)
+    max_reroutes_per_order: 3       # loop limit, then escalate
+
+  logs:
+    feedback: logs/feedback_log.jsonl   # human rejections (appended)
+    incidents: logs/incident_log.jsonl  # long-term memory stand-in (appended)
+    similar_cases_shown: 3
+
 paths:
   rf_model_out: models/routemind_rf.joblib
   mlp_model_out: models/routemind_mlp.joblib

@@ -1,5 +1,22 @@
 [
   {
+    "_note": "Real DataCo order (Order Id 58619, Order Item Id 146726, training set), Standard Class, frozen-RF score 0.340",
+    "order_id": "REAL-58619-146726",
+    "Type": "DEBIT",
+    "Shipping Mode": "Standard Class",
+    "Days for shipment (scheduled)": 4,
+    "Market": "LATAM",
+    "Order Region": "Central America",
+    "Customer Segment": "Corporate",
+    "Category Name": "Camping & Hiking",
+    "Department Name": "Fan Shop",
+    "Order Item Quantity": 1,
+    "Order Item Product Price": 299.980011,
+    "Order Item Discount Rate": 0.050000001,
+    "Sales": 299.980011,
+    "order date (DateOrders)": "5/5/2017 16:29"
+  },
+  {
     "_note": "Normal order, First Class",
     "order_id": "DEMO-001",
     "Type": "DEBIT",
