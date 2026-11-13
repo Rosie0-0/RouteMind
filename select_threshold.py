@@ -192,15 +192,14 @@ def main():
     prec, rec, _ = precision_recall_curve(y_arr, risk)
     fig, ax = plt.subplots(figsize=(6.5, 5))
     ax.plot(rec, prec, color="tab:blue")
-    markers = {"t = 0.50 (default)": table[table["threshold"] == 0.5].iloc[0]}
+    # One marker per threshold. When several rules pick the same threshold
+    # (precision >= 0.70 and >= 0.80 both pick 0.35), the later, stricter
+    # rule's label is kept, so the chart names the rule used in config.yaml.
+    markers = {0.5: ("t = 0.50 (default)", table[table["threshold"] == 0.5].iloc[0])}
     for rule, r in picks.items():
-        markers[f"t = {r['threshold']:.2f} ({rule})"] = r
-    seen = set()
-    for label, r in markers.items():
         key = round(float(r["threshold"]), 2)
-        if key in seen:
-            continue
-        seen.add(key)
+        markers[key] = (f"t = {key:.2f} ({rule})", r)
+    for label, r in markers.values():
         ax.scatter(r["recall"], r["precision"], s=60, zorder=3, label=label)
     ax.axhline(y_arr.mean(), color="grey", linestyle=":",
                label=f"Flag everything (precision {y_arr.mean():.2f})")
