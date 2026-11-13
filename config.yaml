@@ -63,7 +63,7 @@ random_forest:
                              # 10/15/20 identical, no limit starts to overfit)
   min_samples_split: 10      # a node needs 10 orders before it may split
   min_samples_leaf: 5        # every leaf keeps at least 5 orders (no 1-order rules)
-  class_weight: balanced     # weight classes equally despite the 55/45 split
+  class_weight: balanced     # weight classes equally despite the 57/43 split
   n_jobs: -1                 # use all CPU cores
   random_state: 42
 
