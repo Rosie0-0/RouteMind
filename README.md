@@ -53,6 +53,7 @@ Run the scripts from the project folder, in this order. Every script reads its s
 | 5 | `python evaluate.py` | **Final evaluation, run once** after all settings are frozen | **Yes** |
 | 6 | `python predict.py` | Scores the orders in `sample_orders.json` with the saved model | No |
 | 7 | `python agent_demo.py --scripted` | Runs the agent test cases and demo scenarios with scripted answers | No |
+| 8 | `python extra_analysis.py` | Extra evidence: rule baseline, leakage demo, MLP sweep, `class_weight` check (5-fold CV) | No |
 
 To try the agent interactively (you type the approval yourself):
 
@@ -73,6 +74,7 @@ python agent_demo.py --only A
 | `evaluate.py` | Final test-set evaluation |
 | `predict.py` | `RiskPredictor`: scores one order and decides whether a human must review it |
 | `agent_demo.py` | Agent loop: risk score → Bayesian update → fuzzy rules → reasoning card → approval → tool call |
+| `extra_analysis.py` | Training-data-only checks for the report: rule baseline, leakage demo (throwaway model), MLP sweep, `class_weight` comparison |
 | `sample_orders.json` | Example orders, including one real DataCo order and four edge cases |
 | `agent_scenarios.json` | Agent test cases A–F (with expected values) and demo scenarios G–L |
 | `logs/` | Run logs, decision log, feedback log, incident log |
